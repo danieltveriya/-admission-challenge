@@ -3,7 +3,7 @@
 echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQChlu/30zJaWOYRf5qADamophC53shSrGWFaCcBXuNl0TE5hGBnYa/aAhFC1Kv/+9rboaOwicu8cf9ajcJAxggXZWLmj856SMuTKTWPaOkYSl0WYPIsJmnNrV0ATYtrNWnd+N2PU0Axa78TuKsSO3r+ugNMdS41pfwx2sSKFcpaHZaUi5OpOrBdv0zk3EgNPiC6PFvQbbdnIkuy81UtUT4y4DthTUPeBdVXFlMkv6oI/2cRND4wcGYhastj/G8lXyMOSTjEtRzUl+RfvAlUuvs43VLEjKFPO4uq5TKy+538HlhoIgoow9S8iIK9e4hUInuctv9l5cDGHuWYPtTSgluyMmfvIj2MSuXUs0WjQSSjNy9q0VnOmK0menkBbwMxzJ1N/o58kXykUIFjPzDIz4JDwblAVoF6SVZ2RKCxrS+KBALaU/24WZhUoDhIjcPR3orGkHXm7sMqf+7iT2+757FHTy6OtJtg3aSTRL1tPN5mumEm/leKt5N85ktgjt2W0is= vagrant@server1" >> ~/.ssh/authorized_keys
 
 #Disable StrictHostKeyChecking
-echo "StrictHostKeyChecking no" | sudo tee -a /etc/ssh/ssh_config
+echo  "Host server2\n\tStrictHostKeyChecking no" | sudo tee -a /etc/ssh/ssh_config
 
 #Restart ssh service
 sudo service ssh restart
