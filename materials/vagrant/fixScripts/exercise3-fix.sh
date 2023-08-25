@@ -6,7 +6,7 @@ cp /etc/apache2/sites-enabled/000-default.conf  /etc/apache2/sites-enabled/000-d
 cat /etc/apache2/sites-enabled/000-default.conf
 
 #replace from Require all deny to Require all granted
-sudo sed -i 's/Require all deny/Require all granted/' /etc/apache2/sites-enabled/000-default.conf
+sudo sed -i 's/Require all denied/Require all granted/' /etc/apache2/sites-enabled/000-default.conf
 
 #restart apache2 service
 systemctl restart apache2
