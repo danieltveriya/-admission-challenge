@@ -1,16 +1,39 @@
 #!/bin/bash
-#Write id_rsa.pub content from server1 
-echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQChlu/30zJaWOYRf5qADamophC53shSrGWFaCcBXuNl0TE5hGBnYa/aAhFC1Kv/+9rboaOwicu8cf9ajcJAxggXZWLmj856SMuTKTWPaOkYSl0WYPIsJmnNrV0ATYtrNWnd+N2PU0Axa78TuKsSO3r+ugNMdS41pfwx2sSKFcpaHZaUi5OpOrBdv0zk3EgNPiC6PFvQbbdnIkuy81UtUT4y4DthTUPeBdVXFlMkv6oI/2cRND4wcGYhastj/G8lXyMOSTjEtRzUl+RfvAlUuvs43VLEjKFPO4uq5TKy+538HlhoIgoow9S8iIK9e4hUInuctv9l5cDGHuWYPtTSgluyMmfvIj2MSuXUs0WjQSSjNy9q0VnOmK0menkBbwMxzJ1N/o58kXykUIFjPzDIz4JDwblAVoF6SVZ2RKCxrS+KBALaU/24WZhUoDhIjcPR3orGkHXm7sMqf+7iT2+757FHTy6OtJtg3aSTRL1tPN5mumEm/leKt5N85ktgjt2W0is= vagrant@server1" >> ~/.ssh/authorized_keys
 
-#Disable StrictHostKeyChecking
-echo  "Host server2\n\tStrictHostKeyChecking no" | sudo tee -a /etc/ssh/ssh_config
+# Copy SSH keys and authorized_keys for vagrant user
+cp /vagrant/server2_id_rsa /home/vagrant/.ssh/id_rsa
+cp /vagrant/server2_id_rsa.pub /home/vagrant/.ssh/id_rsa.pub
+cat /vagrant/server1_vagrant_id_rsa.pub >> /home/vagrant/.ssh/authorized_keys
+chown -R vagrant:vagrant /home/vagrant/.ssh/
+chmod 700 /home/vagrant/.ssh
+chmod 600 /home/vagrant/.ssh/id_rsa
+chmod 644 /home/vagrant/.ssh/id_rsa.pub
 
-#Restart ssh service
-sudo service ssh restart
+# Copy SSH keys and authorized_keys for root user
+cp /vagrant/server2_root_id_rsa /root/.ssh/id_rsa
+cp /vagrant/server2_root_id_rsa.pub /root/.ssh/id_rsa.pub
+cat /vagrant/server1_root_id_rsa.pub >> /root/.ssh/authorized_keys
+chmod 700 /root/.ssh
+chmod 600 /root/.ssh/id_rsa
+chmod 644 /root/.ssh/id_rsa.pub
 
-#add fix to exercise5-server2 here
-Add rsa_pub contect from server1 to authorized_keys file on server2
+# Configure SSH for vagrant user
+cat <<EOF >/home/vagrant/.ssh/config
+Host *
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null
+EOF
 
-Disable hostkey checking on server2
+# Configure SSH for root user
+cat <<EOF >/root/.ssh/config
+Host *
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null
+EOF
 
-restart ssh service for changes will take effect.
+# Enable PubkeyAuthentication and disable direct root login
+echo "PubkeyAuthentication yes" >> /etc/ssh/sshd_config
+echo "PermitRootLogin prohibit-password" >> /etc/ssh/sshd_config
+
+# Restart SSH service
+systemctl restart sshd
